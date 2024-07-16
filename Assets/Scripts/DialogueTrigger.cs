@@ -4,11 +4,14 @@ using UnityEngine;
 
 public class DialogueTrigger : MonoBehaviour
 {
+    public Message[] messages;
+    public Actor[] actors;
+
     [Header("Visual Cue")]
     [SerializeField] private GameObject visualCue;
 
-    [Header("ink JSON")]
-    [SerializeField] private TextAsset inkJSON;
+    // [Header("ink JSON")]
+    // [SerializeField] private TextAsset inkJSON;
 
     private bool playerInRange;
 
@@ -18,14 +21,22 @@ public class DialogueTrigger : MonoBehaviour
         visualCue.SetActive(false);
     }
 
+    public void StartDialogue()
+    {
+        FindObjectOfType<DialogueManager>().OpenDialogue(messages, actors);
+
+    }
+
     private void Update()
     {
         if(playerInRange && !DialogueManager.GetInstance().dialogueIsPlaying)
         {
             visualCue.SetActive(true);
-            if(Input.GetKeyDown(KeyCode.E))
+
+            if(Input.GetKey(KeyCode.E))
             {
-               DialogueManager.GetInstance().EnterDialogueMode(inkJSON);
+            //    DialogueManager.GetInstance().EnterDialogueMode(inkJSON);
+            FindObjectOfType<DialogueManager>().OpenDialogue(messages, actors);
             }
         }
         else
@@ -51,8 +62,22 @@ public class DialogueTrigger : MonoBehaviour
 
     }
 
-    private void OnClick()
-    {
-        Debug.Log(inkJSON.text);
-    }
+    // private void OnClick()
+    // {
+    //     Debug.Log(inkJSON.text);
+    // }
+}
+
+[System.Serializable]
+public class Message
+{
+    public int actorId;
+    public string message;
+}
+
+[System.Serializable]
+public class Actor
+{
+    public string name;
+    public Sprite sprite;
 }
